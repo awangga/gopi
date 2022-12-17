@@ -6,6 +6,11 @@ Golang Google Api. To access Google API, please download client_secret_file.json
 service + body = execute
 
 # For Contributor
+Environtment Variables
+```sh
+GOPROXY=proxy.golang.org
+```
+
 Testing before commit and push
 ```sh
 go test
@@ -15,7 +20,7 @@ Release Version
 ```sh
 git tag v0.1.2
 git push origin --tags
-go list -m github.com/awangga/gogis@v0.1.2
+go list -m github.com/awangga/gopi@v0.1.2
 ```
 
 ## Service
