@@ -5,6 +5,19 @@ Golang Google Api. To access Google API, please download client_secret_file.json
 # The flow
 service + body = execute
 
+# For Contributor
+Testing before commit and push
+```sh
+go test
+```
+
+Release Version
+```sh
+git tag v0.1.2
+git push origin --tags
+go list -m github.com/awangga/gogis@v0.1.2
+```
+
 ## Service
 Open google api service with json credentials file and token.pickle, please run in localhost first to generate token.pickle with user confirmation. after that you may put token.pickle in your server.
 
