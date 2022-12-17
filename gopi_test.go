@@ -1,17 +1,18 @@
-package main
+package gopi
 
 import (
 	"context"
 	"fmt"
 	"log"
 	"os"
+	"testing"
 
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/docs/v1"
 	"google.golang.org/api/option"
 )
 
-func main() {
+func TestGetDocsTitle(t *testing.T) {
 	ctx := context.Background()
 	b, err := os.ReadFile("credentials.json")
 	if err != nil {
@@ -23,7 +24,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	client := service.getClient(config)
+	client := getClient(config)
 
 	srv, err := docs.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
@@ -38,4 +39,7 @@ func main() {
 		log.Fatalf("Unable to retrieve data from document: %v", err)
 	}
 	fmt.Printf("The title of the doc is: %s\n", doc.Title)
+	if got := doc.Title; got == "" {
+		t.Errorf("Response Body : %v, didn't return json", got)
+	}
 }
