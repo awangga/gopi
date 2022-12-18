@@ -1,9 +1,11 @@
 package gopi
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -13,17 +15,8 @@ import (
 )
 
 // Retrieves a token, saves the token, then returns the generated client.
-func getClient(jsonsecfile string, tokFile string, apiscope ...string) *http.Client {
-	b, err := os.ReadFile(jsonsecfile)
-	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
-	}
-
-	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, apiscope...)
-	if err != nil {
-		log.Fatalf("Unable to parse client secret file to config: %v", err)
-	}
+func GetClient(jsonsecfile string, tokFile string, apiscope ...string) *http.Client {
+	config := getConfig(jsonsecfile, apiscope...)
 
 	tok, err := tokenFromFile(tokFile)
 	if err != nil {
@@ -31,6 +24,19 @@ func getClient(jsonsecfile string, tokFile string, apiscope ...string) *http.Cli
 		saveToken(tokFile, tok)
 	}
 	return config.Client(context.Background(), tok)
+}
+
+func getConfig(jsonsecfile string, apiscope ...string) *oauth2.Config {
+	b, err := os.ReadFile(jsonsecfile)
+	if err != nil {
+		log.Fatalf("Unable to read client secret file: %v", err)
+	}
+
+	config, err := google.ConfigFromJSON(b, apiscope...)
+	if err != nil {
+		log.Fatalf("Unable to parse client secret file to config: %v", err)
+	}
+	return config
 }
 
 // Requests a token from the web, then returns the retrieved token.
@@ -49,6 +55,25 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 		log.Fatalf("Unable to retrieve token from web: %v", err)
 	}
 	return tok
+}
+
+// Requests a token from the web, then returns the retrieved token.
+func GenerateTokenFile(jsonsecfile string, tokFile string, apiscope ...string) {
+	config := getConfig(jsonsecfile, apiscope...)
+	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
+	fmt.Printf("Go to the following link in your browser then type the "+
+		"authorization code: \n%v\n", authURL)
+
+	r, _ := io.Pipe()
+	scanner := bufio.NewScanner(r)
+	authCode := scanner.Text()
+
+	tok, err := config.Exchange(context.Background(), authCode)
+	if err != nil {
+		log.Fatalf("Unable to retrieve token from web: %v", err)
+	}
+
+	saveToken(tokFile, tok)
 }
 
 // Retrieves a token from a local file.

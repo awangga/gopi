@@ -38,27 +38,38 @@ Generate json or dictionary for data post to Google API
 Sending request with or without body into Google API and get response
 
 ## Example
-First thing is import google api module and others helpers you need, after that please define apiscope,jsonsecfile and tokenpickel
-```python
-from googleapi import service,body,execute
-from helper import email
+First thing is import google api module and others helpers you need, after that please define apiscope,jsonsecfile and tokenfile
+```go
+var apiscope = []string{"https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/blogger", "https://www.googleapis.com/auth/gmail.send", "https://www.googleapis.com/auth/gmail.readonly"}
 
-apiscope=['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/blogger','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/gmail.readonly']
-jsonsecfile='client_secret_file.json'
-tokenpickle='token.pickle'
+const jsonsecfile = "credentials.json"
+const tokenfile = "token.json"
 ```
 
-### Sending email
-First we create Mime Text Email with helper library : 
-```python
-msg=email.createMessage('Rolly Maulana Awangga <awangga@ulbi.ac.id>','rolly@awang.ga','my info',"hello gaes","plain")
+### Reading google docs
+First import library : 
+```go
+import "github.com/awangga/gopi"
 ```
-After that just passing the argument with the variabel above with flow : service -> body -> execute
-```python
-srv=service.Open('gmail',apiscope,jsonsecfile,tokenpickle)
+After that use in your main package
+```go
+	ctx := context.Background()
+	client := gopi.GetClient(jsonsecfile, tokenfile, apiscope...)
+	srv, err := docs.NewService(ctx, option.WithHTTPClient(client))
+	if err != nil {
+		log.Fatalf("Unable to retrieve Docs client: %v", err)
+	}
 
-json=body.GmailSend(msg)
-
-resp=execute.GmailSend(srv,json)
+	// Prints the title of the requested doc:
+	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
+	docId := "195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE"
+	doc, err := srv.Documents.Get(docId).Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve data from document: %v", err)
+	}
+	fmt.Printf("The title of the doc is: %s\n", doc.Title)
+	if got := doc.Title; got == "" {
+		t.Errorf("Response Body : %v, didn't return json", got)
+	}
 ```
-Thats all. If u want to catch response from google API just use resp (json format).
+Thats all. If u want to catch response from google API just use doc (json format).
