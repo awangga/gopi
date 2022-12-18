@@ -4,27 +4,18 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"testing"
 
-	"golang.org/x/oauth2/google"
 	"google.golang.org/api/docs/v1"
 	"google.golang.org/api/option"
 )
 
 func TestGetDocsTitle(t *testing.T) {
+	apiscope := []string{"https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/blogger", "https://www.googleapis.com/auth/gmail.send", "https://www.googleapis.com/auth/gmail.readonly"}
+	jsonsecfile := "credentials.json"
+	tokenfile := "token.json"
 	ctx := context.Background()
-	b, err := os.ReadFile("credentials.json")
-	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
-	}
-
-	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, "https://www.googleapis.com/auth/documents.readonly")
-	if err != nil {
-		log.Fatalf("Unable to parse client secret file to config: %v", err)
-	}
-	client := getClient(config)
+	client := getClient(jsonsecfile, tokenfile, apiscope...)
 
 	srv, err := docs.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {

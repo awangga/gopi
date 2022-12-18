@@ -9,11 +9,22 @@ import (
 	"os"
 
 	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
 // Retrieves a token, saves the token, then returns the generated client.
-func getClient(config *oauth2.Config) *http.Client {
-	tokFile := "token.json"
+func getClient(jsonsecfile string, tokFile string, apiscope ...string) *http.Client {
+	b, err := os.ReadFile(jsonsecfile)
+	if err != nil {
+		log.Fatalf("Unable to read client secret file: %v", err)
+	}
+
+	// If modifying these scopes, delete your previously saved token.json.
+	config, err := google.ConfigFromJSON(b, apiscope...)
+	if err != nil {
+		log.Fatalf("Unable to parse client secret file to config: %v", err)
+	}
+
 	tok, err := tokenFromFile(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb(config)
