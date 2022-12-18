@@ -15,6 +15,7 @@ import (
 	"google.golang.org/api/blogger/v3"
 	"google.golang.org/api/docs/v1"
 	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/gmail/v1"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
@@ -33,6 +34,8 @@ func GetService(client *http.Client, srvtype string) interface{} {
 		srv, err = blogger.NewService(ctx, option.WithHTTPClient(client))
 	case "drive":
 		srv, err = drive.NewService(ctx, option.WithHTTPClient(client))
+	case "gmail":
+		srv, err = gmail.NewService(ctx, option.WithHTTPClient(client))
 
 	}
 	if err != nil {
