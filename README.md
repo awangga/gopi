@@ -16,6 +16,7 @@ GOPROXY=proxy.golang.org
 Testing before commit and push
 ```sh
 go test
+git tag
 ```
 
 Release Version
