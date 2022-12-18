@@ -54,13 +54,14 @@ import "github.com/awangga/gopi"
 ```
 After that use in your main package
 ```go
-	ctx := context.Background()
+func main() {
 	client := gopi.GetClient(jsonsecfile, tokenfile, apiscope...)
-	srv, err := docs.NewService(ctx, option.WithHTTPClient(client))
-	if err != nil {
-		log.Fatalf("Unable to retrieve Docs client: %v", err)
-	}
+	docssrv := gopi.GetService(client, "docs").(*docs.Service)
+	doc := getDocsTitle(docssrv)
+	fmt.Printf("The title of the doc is: %s\n", doc.Title)
+}
 
+func getDocsTitle(srv *docs.Service) *docs.Document {
 	// Prints the title of the requested doc:
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
 	docId := "195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE"
@@ -68,7 +69,7 @@ After that use in your main package
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from document: %v", err)
 	}
-	fmt.Printf("The title of the doc is: %s\n", doc.Title)
-
+	return doc
+}
 ```
 Thats all. If u want to catch response from google API just use doc (json format).
