@@ -14,6 +14,7 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/blogger/v3"
 	"google.golang.org/api/docs/v1"
+	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
@@ -31,7 +32,7 @@ func GetService(client *http.Client, srvtype string) interface{} {
 	case "blogger":
 		srv, err = blogger.NewService(ctx, option.WithHTTPClient(client))
 	case "drive":
-		srv, err = blogger.NewService(ctx, option.WithHTTPClient(client))
+		srv, err = drive.NewService(ctx, option.WithHTTPClient(client))
 
 	}
 	if err != nil {
