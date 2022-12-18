@@ -69,8 +69,6 @@ After that use in your main package
 		log.Fatalf("Unable to retrieve data from document: %v", err)
 	}
 	fmt.Printf("The title of the doc is: %s\n", doc.Title)
-	if got := doc.Title; got == "" {
-		t.Errorf("Response Body : %v, didn't return json", got)
-	}
+
 ```
 Thats all. If u want to catch response from google API just use doc (json format).
