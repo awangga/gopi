@@ -12,7 +12,34 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"google.golang.org/api/blogger/v2"
+	"google.golang.org/api/docs/v1"
+	"google.golang.org/api/option"
+	"google.golang.org/api/sheets/v4"
 )
+
+// retrive service from api
+func GetService(client *http.Client, srvtype string) interface{} {
+	ctx := context.Background()
+	var srv interface{}
+	var err error
+	switch srvtype {
+	case "docs":
+		srv, err = docs.NewService(ctx, option.WithHTTPClient(client))
+	case "sheets":
+		srv, err = sheets.NewService(ctx, option.WithHTTPClient(client))
+	case "blogger":
+		srv, err = blogger.NewService(ctx, option.WithHTTPClient(client))
+	case "drive":
+		srv, err = blogger.NewService(ctx, option.WithHTTPClient(client))
+
+	}
+	if err != nil {
+		log.Fatalf("Unable to retrieve Service client: %v", err)
+	}
+	return srv
+
+}
 
 // Retrieves a token, saves the token, then returns the generated client.
 func GetClient(jsonsecfile string, tokFile string, apiscope ...string) *http.Client {
