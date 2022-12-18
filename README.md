@@ -3,7 +3,9 @@ Golang Google Api. To access Google API, please download client_secret_file.json
 ![Credentials in APIs & Services Menu](/docs/img/creds.jpg "Credentials Json Location")
 
 # The flow
-service + body = execute
+getClient + NewService + [body] = Do()
+
+[] means optional
 
 # For Contributor
 Environtment Variables
@@ -23,14 +25,17 @@ git push origin --tags
 go list -m github.com/awangga/gopi@v0.1.2
 ```
 
-## Service
-Open google api service with json credentials file and token.pickle, please run in localhost first to generate token.pickle with user confirmation. after that you may put token.pickle in your server.
+## getClient
+Open google api service with json credentials file and tokenfile, please run in localhost first to generate token.json with user confirmation. after that you may put token.json in your server.
+
+## NewService
+Select service for docs,mail,drive etc.
 
 ## Body
 Generate json or dictionary for data post to Google API
 
-## Execute
-Sending body into Google API and get response
+## DO()
+Sending request with or without body into Google API and get response
 
 ## Example
 First thing is import google api module and others helpers you need, after that please define apiscope,jsonsecfile and tokenpickel
